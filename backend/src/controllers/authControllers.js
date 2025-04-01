@@ -4,7 +4,7 @@ import pool from "../config/dbConfig.js";
 
 export const signUp = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password,name } = req.body;
     // check for existing user
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
@@ -15,8 +15,8 @@ export const signUp = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10)
     const newUser = await pool.query(
-      "INSERT INTO users(email,password) VALUES($1,$2) RETURNING *",
-      [email, hashedPassword]
+      "INSERT INTO users(email,password,name) VALUES($1,$2,$3) RETURNING *",
+      [email, hashedPassword,name]
     );
 
     const token = jwt.sign({ id: newUser.rows[0].id }, process.env.JWT_SECRET, {

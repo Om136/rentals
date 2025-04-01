@@ -1,9 +1,19 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 
+
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const handleSignIn = () => {
+    // Handle sign-in logic here
+    navigate('/sign-in');
+  };
+  const handleSignUp = () => {
+    // Handle sign-up logic here
+    navigate('/sign-up');
+  }
   return (
     <div className='flex justify-between py-4 items-center mx-2'>
       <div>
@@ -23,11 +33,11 @@ export const Navbar = () => {
         </Button>
       </div>
       <div className='flex gap-4'>
-        <Button asChild>
-          <Link href="/signin">Sign in</Link>
+        <Button onClick={handleSignIn}>
+          Sign in
         </Button>
-        <Button asChild>
-          <Link href="/signup">Sign up</Link>
+        <Button onClick={handleSignUp}>
+          Sign up
         </Button>
       </div>
     </div>
