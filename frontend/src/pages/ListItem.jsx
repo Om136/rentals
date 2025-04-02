@@ -1,11 +1,13 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const ListItem = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     category: "",
     description: "",
-    location: "",
     price: "",
     weeklyPrice: "",
     monthlyPrice: "",
@@ -13,6 +15,8 @@ export const ListItem = () => {
     serviceFee: "",
     image: null,
     listingType: "rent",
+    latitude: "", // Added latitude
+    longitude: "", // Added longitude
   });
 
   const handleChange = (e) => {
@@ -21,13 +25,65 @@ export const ListItem = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, image: URL.createObjectURL(file) });
+    // Store the file directly instead of creating an object URL immediately
+    setFormData({ ...formData, image: file });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Listing Data:", formData);
-    alert("Item listed successfully!");
+    const data = new FormData();
+
+    // Ensure all fields are appended correctly
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null && formData[key] !== undefined) {
+        data.append(key, formData[key]);
+      }
+    });
+
+    // Log the FormData keys and values for debugging
+    const jsonbody = {};
+    for (let [key, value] of data.entries()) {
+      jsonbody[key] = value;
+    }
+    console.log("FormData:", jsonbody);
+
+    const body = {
+      title: jsonbody.name,
+      description: jsonbody.description,
+      category: jsonbody.category,
+      lng: jsonbody.longitude,
+      lat: jsonbody.latitude,
+      price: jsonbody.SellingPrice,
+      rental_rate: jsonbody.price,
+      is_rental: jsonbody.listingType === "rent",
+      image: jsonbody.image,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authentication token is missing. Please log in.");
+      }
+
+      const response = await axios.post("http://localhost:5000/items", body, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensure multipart/form-data is used
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response:", response.data);
+      alert("Item listed successfully!");
+      navigate("/"); // Redirect to home page or another page after successful listing
+
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Unauthorized: Please log in again.");
+      } else {
+        console.error("Error:", error);
+        alert("An error occurred. Please check the console for details.");
+      }
+    }
   };
 
   return (
@@ -59,10 +115,15 @@ export const ListItem = () => {
             className="w-full border p-2 rounded"
           >
             <option value="">Select Category</option>
-            <option value="Camera">Camera</option>
-            <option value="Bicycle">Bicycle</option>
+            <option value="Home">Home</option>
+            <option value="Vehicles">Vehicles</option>
             <option value="Electronics">Electronics</option>
-            <option value="Other">Other</option>
+            <option value="Photography">Photography</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Tools">Tools</option>
+            <option value="Sports">Sports</option>
+            <option value="Others">Others</option>
           </select>
         </div>
 
@@ -79,16 +140,29 @@ export const ListItem = () => {
         </div>
 
         {/* Location */}
-        <div>
-          <label className="block font-medium">Location</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-          />
+        <div className="flex gap-10">
+          <div>
+            <label className="block font-medium">Latitude</label>
+            <input
+              type="number"
+              name="latitude" // Corrected name attribute
+              value={formData.latitude} // Corrected value binding
+              onChange={handleChange}
+              required
+              className="w-full border p-2 rounded"
+            />
+          </div>
+          <div>
+            <label className="block font-medium">Longitude</label>
+            <input
+              type="number"
+              name="longitude" // Corrected name attribute
+              value={formData.longitude} // Corrected value binding
+              onChange={handleChange}
+              required
+              className="w-full border p-2 rounded"
+            />
+          </div>
         </div>
 
         {/* Listing Type */}
@@ -132,22 +206,11 @@ export const ListItem = () => {
             />
           </div>
           <div>
-            <label className="block font-medium">Weekly Price ($)</label>
+            <label className="block font-medium">Selling Price ($)</label>
             <input
               type="number"
-              name="weeklyPrice"
-              value={formData.weeklyPrice}
-              onChange={handleChange}
-              required
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block font-medium">Monthly Price ($)</label>
-            <input
-              type="number"
-              name="monthlyPrice"
-              value={formData.monthlyPrice}
+              name="SellingPrice"
+              value={formData.SellingPrice || ""}
               onChange={handleChange}
               required
               className="w-full border p-2 rounded"
@@ -188,7 +251,7 @@ export const ListItem = () => {
           />
           {formData.image && (
             <img
-              src={formData.image}
+              src={URL.createObjectURL(formData.image)}
               alt="Uploaded"
               className="mt-4 w-32 h-32 object-cover rounded"
             />

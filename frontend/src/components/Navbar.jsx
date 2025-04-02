@@ -17,19 +17,23 @@ export const Navbar = () => {
   return (
     <div className='flex justify-between py-4 items-center mx-2'>
       <div>
-        <Button className=" text-2xl font-bold" variant="link">
-          <Link href="/">Rentals</Link>
+        <Button onClick={()=>{
+          navigate("/")
+        }} className=" text-2xl font-bold" variant="link">
+          Rentals
         </Button>
       </div>
       <div className=''>
-        <Button className=" text-sm" variant="link">
-          <Link href="/browse">Browse</Link>
+        <Button onClick={()=>{navigate("/browse")}} className=" text-sm" variant="link">
+          Browse
         </Button>
         <Button variant="link">
           <Link href="/working">How it works</Link>
         </Button>
-        <Button variant="link">
-          <Link href="/list-item">List your item</Link>
+        <Button variant="link" onClick={()=>{
+          navigate("/list-item")
+        }}>
+          List your item
         </Button>
       </div>
       <div className='flex gap-4'>
