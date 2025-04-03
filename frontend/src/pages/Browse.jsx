@@ -10,10 +10,13 @@ import {
 import { ProductGrid } from '@/components/ProductDisplay';
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import ListingTypeToggle from '@/components/TogglerRentBuy';
 
 export const Browse = () => {
   const [selectedCategory, setSelectedCategory] = useState("all"); // State for selected category
   const [searchValue,setSearchValue] = useState(""); // State for search value
+  const [selected, setSelected] = useState("Rent");
+
 
   return (
     <>
@@ -40,7 +43,10 @@ export const Browse = () => {
               </SheetHeader>
               <div className="flex flex-col gap-4 px-5 font-bold">
                 <h1 className="font-bold">Categories</h1>
-                <RadioGroup value={selectedCategory} onValueChange={setSelectedCategory}>
+                <RadioGroup
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="all" id="r1" />
                     <Label htmlFor="r1">All</Label>
@@ -79,12 +85,16 @@ export const Browse = () => {
                   </div>
                 </RadioGroup>
               </div>
+              <div>
+                <ListingTypeToggle selected={selected} setSelected={setSelected} />
+              </div>
             </SheetContent>
           </Sheet>
         </div>
       </div>
       <div>
-        <ProductGrid category={selectedCategory} searchValue={searchValue} /> {/* Pass category to ProductGrid */}
+        <ProductGrid category={selectedCategory} searchValue={searchValue} selected={selected} />{" "}
+        {/* Pass category to ProductGrid */}
       </div>
     </>
   );

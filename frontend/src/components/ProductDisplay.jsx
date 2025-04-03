@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState, useMemo } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const pageSize = 8; // Number of products per page
 
-export const ProductGrid = ({ category, searchValue }) => {
+export const ProductGrid = ({ category, searchValue,selected }) => {
   console.log("Selected Category:", category);
   console.log(searchValue);
   const [currentPage, setCurrentPage] = useState(1);
   const [allProducts, setAllProducts] = useState([]); // Store all fetched products
+  const navigate = useNavigate();
 
   // Fetch products from API
   useEffect(() => {
@@ -32,16 +34,16 @@ export const ProductGrid = ({ category, searchValue }) => {
       const categoryMatches =
         category === "all" || product.category === category;
 
+      const selectedtype = selected === "All" ? true : selected === "Rent"? product.is_rental : !product.is_rental;  
+
       // Check search match. If searchValue is empty, allow all products.
       // Otherwise, filter based on product title (ignoring case).
-      const searchMatches =
-        searchValue.trim() === "" ||
-        product.title.toLowerCase().includes(searchValue.toLowerCase());
+      const searchMatches = searchValue.trim() === "" || product.title.toLowerCase().includes(searchValue.toLowerCase());
 
       // Only include products that match both filters.
-      return categoryMatches && searchMatches;
+      return categoryMatches && searchMatches && selectedtype;
     });
-  }, [category, allProducts, searchValue]);
+  }, [category, allProducts, searchValue, selected]);
 
 
   // Reset current page when filtered products change (optional)
@@ -69,6 +71,9 @@ export const ProductGrid = ({ category, searchValue }) => {
           <div
             key={product.id}
             className="bg-white border rounded-lg shadow-sm p-4 relative"
+            onClick={( ) =>{
+              navigate(`/browse/${product.id}`);
+            }}
           >
             <div className="h-52 bg-gray-200 flex items-center justify-center rounded-md mb-4">
               <img src={product.images[0]} alt="Product" />

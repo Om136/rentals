@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar, FaMapMarkerAlt, FaRegHeart, FaShareAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const ProductDetails = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tab, setTab] = useState("description");
 
-  const product = {
-    id: 1,
-    name: "Professional DSLR Camera Kit with Lenses",
-    price: 35,
-    weeklyPrice: 210,
-    monthlyPrice: 700,
-    location: "San Francisco, CA",
-    rating: 4.9,
-    reviews: 128,
-    deposit: 200,
-    serviceFee: 15,
-    image: "", // Add image URL or leave empty for a placeholder
-    description:
-      "A high-quality DSLR camera kit with multiple lenses for professional photography.",
-    specifications: ["24MP Sensor", "4K Video Recording", "Wi-Fi & Bluetooth"],
-  };
+  // const product = {
+  //   id: 1,
+  //   name: "Professional DSLR Camera Kit with Lenses",
+  //   price: 35,
+  //   weeklyPrice: 210,
+  //   monthlyPrice: 700,
+  //   location: "San Francisco, CA",
+  //   rating: 4.9,
+  //   reviews: 128,
+  //   deposit: 200,
+  //   serviceFee: 15,
+  //   image: "", // Add image URL or leave empty for a placeholder
+  //   description:
+  //     "A high-quality DSLR camera kit with multiple lenses for professional photography.",
+  //   specifications: ["24MP Sensor", "4K Video Recording", "Wi-Fi & Bluetooth"],
+  // };
+  const [product, setProduct] = useState({ images: [] }); // Ensure images is initialized as an empty array
+
+  const { id } = useParams();
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/items/${id}`);
+        setProduct(response.data);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const calculateTotal = () => {
     if (!startDate || !endDate) return product.deposit;
     const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    return days * product.price + product.serviceFee + product.deposit;
+    return days * product.rental_rate + 5 + 100;
   };
 
   return (
@@ -37,10 +54,10 @@ export const ProductDetails = () => {
       <div>
         {/* Product Image */}
         <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-lg">
-          {product.image ? (
+          {product.images.length > 0 ? ( // Check if images array has elements
             <img
-              src={product.image}
-              alt={product.name}
+              src={product.images[0]}
+              alt={product.title || "Product Image"} // Fallback for alt text
               className="w-full h-full object-cover rounded-lg"
             />
           ) : (
@@ -49,25 +66,25 @@ export const ProductDetails = () => {
         </div>
 
         {/* Product Info */}
-        <h2 className="text-2xl font-bold mt-4">{product.name}</h2>
-        <div className="flex items-center text-gray-600 space-x-2 mt-2">
+        <h2 className="text-2xl font-bold mt-4">{product.title}</h2>
+        {/* <div className="flex items-center text-gray-600 space-x-2 mt-2">
           <FaStar className="text-yellow-500" />
           <span>
             {product.rating} ({product.reviews} reviews)
           </span>
           <FaMapMarkerAlt />
           <span>{product.location}</span>
-        </div>
+        </div> */}
 
         {/* Action Buttons */}
-        <div className="flex space-x-4 mt-4">
+        {/* <div className="flex space-x-4 mt-4">
           <button className="flex items-center space-x-2 text-gray-500 hover:text-black">
             <FaShareAlt /> <span>Share</span>
           </button>
           <button className="flex items-center space-x-2 text-gray-500 hover:text-black">
             <FaRegHeart /> <span>Save</span>
           </button>
-        </div>
+        </div> */}
       </div>
 
       {/* Right Side: Booking & Pricing */}
@@ -82,11 +99,11 @@ export const ProductDetails = () => {
 
         {/* Pricing */}
         <div className="text-3xl font-bold mt-4">
-          ${product.price} <span className="text-lg">/day</span>
+          ${product.rental_rate} <span className="text-lg">/day</span>
         </div>
-        <div className="text-gray-500 text-sm">
+        {/* <div className="text-gray-500 text-sm">
           Weekly: ${product.weeklyPrice} | Monthly: ${product.monthlyPrice}
-        </div>
+        </div> */}
 
         {/* Date Picker */}
         <div className="mt-4">
@@ -129,11 +146,11 @@ export const ProductDetails = () => {
           </div>
           <div className="flex justify-between">
             <span>Service Fee</span>
-            <span>${product.serviceFee}</span>
+            <span>${5}</span>
           </div>
           <div className="flex justify-between">
             <span>Security Deposit (Refundable)</span>
-            <span>${product.deposit}</span>
+            <span>${100}</span>
           </div>
           <div className="flex justify-between font-bold text-lg mt-2">
             <span>Total</span>

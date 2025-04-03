@@ -18,4 +18,8 @@ pool
   .then(() => console.log("🟢 Connected to Neon PostgreSQL"))
   .catch((err) => console.error("🔴 Error connecting to Neon:", err));
 
+  pool.on("error", (err, client) => {
+    console.error("Unexpected error on idle client", err);
+  });
+
 export default pool;
