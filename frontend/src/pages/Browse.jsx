@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -12,10 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ListingTypeToggle from '@/components/TogglerRentBuy';
 
-export const Browse = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all"); // State for selected category
-  const [searchValue,setSearchValue] = useState(""); // State for search value
-  const [selected, setSelected] = useState("Rent");
+export const Browse = ({selected,setSelected,searchValue,setSearchValue,selectedCategory,setSelectedCategory}) => {
 
 
   return (

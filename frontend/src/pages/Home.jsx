@@ -10,9 +10,11 @@ import { Categories } from "@/components/Categories";
 import { FeaturedRentals } from "@/components/FeaturedRentals";
 import { ItemsForSale } from "@/components/ItemsForSale";
 import { HomeFooter } from "@/components/HomeFooter";
+import { useNavigate } from "react-router-dom";
 
-export const Home = () => {
+export const Home = ({ setSelected,searchValue, setSearchValue, setSelectedCategory }) => {
   const [activeTab, setActiveTab] = useState("rent");
+  const navigate = useNavigate(); 
 
   return (
     <>
@@ -30,8 +32,8 @@ export const Home = () => {
         {/* Outer Card */}
         <div className="bg-white shadow-md rounded-2xl p-4 w-[90%] max-w-4xl">
           {/* Tabs Section (Rent / Buy) */}
-          <div className="flex items-center space-x-1 bg-gray-100 rounded-xl p-1">
-            <button
+          <div className="flex items-center space-x-1 bg-gray-100 rounded-xl px-3 py-2">
+            {/* <button
               onClick={() => setActiveTab("rent")}
               className={`flex-1 py-2 rounded-xl text-center font-semibold ${
                 activeTab === "rent" ? "bg-white shadow-sm" : "text-gray-500"
@@ -40,13 +42,17 @@ export const Home = () => {
               Rent
             </button>
             <button
-              onClick={() => setActiveTab("buy")}
+              onClick={() => {
+                setActiveTab("buy");
+                setSelected("Buy");
+              }}
               className={`flex-1 py-2 rounded-xl text-center font-semibold ${
                 activeTab === "buy" ? "bg-white shadow-sm" : "text-gray-500"
               }`}
             >
               Buy
-            </button>
+            </button> */}
+            <h1>Quick search your needs</h1>
           </div>
 
           {/* Search Row */}
@@ -59,6 +65,8 @@ export const Home = () => {
                 type="text"
                 placeholder="What are you looking for?"
                 className="bg-transparent w-full outline-none"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
 
@@ -106,15 +114,14 @@ export const Home = () => {
             </button> */}
 
             {/* Search Button */}
-            <button className="bg-black text-white rounded-md px-6 py-2">
+            <button onClick={()=>navigate("/browse")} className="bg-black text-white rounded-md px-6 py-2">
               Search
             </button>
           </div>
         </div>
       </div>
       <div>
-        <Categories />
-
+        <Categories setSelectedCategory={setSelectedCategory} />
       </div>
       <div>
         <FeaturedRentals />

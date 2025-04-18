@@ -4,6 +4,7 @@ import {
   deleteItem,
   getFilteredItems,
   getItemById,
+  getMyItems,
   updateItem,
 } from "../queries/itemQueries.js";
 
@@ -108,4 +109,13 @@ export const itemDeleter = async (req, res) => {
     return res.status(404).json({ message: "Item not found" });
   }
   res.json(item);
+};
+
+export const getUserItems = async (req, res) => {
+  const userId = req.user.id;
+  const items = await getMyItems(userId);
+  if (!items) {
+    return res.status(404).json({ message: "Items not found" });
+  }
+  res.json(items);
 };

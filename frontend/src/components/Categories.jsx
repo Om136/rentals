@@ -6,8 +6,10 @@ import {
   AiOutlineCamera,
 } from "react-icons/ai";
 import { FaTshirt, FaCouch, FaTools, FaBiking } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-export const Categories = () => {
+export const Categories = ({ setSelectedCategory }) => {
+  const navigate = useNavigate(); // Import useNavigate from react-router-dom
   const categories = [
     { label: "Home", icon: <AiOutlineHome size={24} /> },
     { label: "Vehicles", icon: <AiOutlineCar size={24} /> },
@@ -34,6 +36,10 @@ export const Categories = () => {
         {categories.map((category) => (
           <div
             key={category.label}
+            onClick={() => {
+              setSelectedCategory(category.label);
+              navigate("/browse");
+            }}
             className="flex flex-col items-center p-4 border rounded-md hover:shadow-sm transition-shadow"
           >
             {category.icon}

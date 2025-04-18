@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const pageSize = 8; // Number of products per page
 
-export const ProductGrid = ({ category, searchValue,selected }) => {
+export const ProductGrid = ({ category, searchValue, selected }) => {
   console.log("Selected Category:", category);
   console.log(searchValue);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,17 +34,22 @@ export const ProductGrid = ({ category, searchValue,selected }) => {
       const categoryMatches =
         category === "all" || product.category === category;
 
-      const selectedtype = selected === "All" ? true : selected === "Rent"? product.is_rental : !product.is_rental;  
+      const selectedtype =
+        selected === "All"
+          ? true
+          : selected === "Rent"
+          ? product.is_rental
+          : !product.is_rental;
 
-      // Check search match. If searchValue is empty, allow all products.
-      // Otherwise, filter based on product title (ignoring case).
-      const searchMatches = searchValue.trim() === "" || product.title.toLowerCase().includes(searchValue.toLowerCase());
+      // Ensure searchValue is a string and check search match.
+      const searchMatches =
+        (searchValue || "").trim() === "" ||
+        product.title.toLowerCase().includes((searchValue || "").toLowerCase());
 
       // Only include products that match both filters.
       return categoryMatches && searchMatches && selectedtype;
     });
   }, [category, allProducts, searchValue, selected]);
-
 
   // Reset current page when filtered products change (optional)
   useEffect(() => {
@@ -71,7 +76,7 @@ export const ProductGrid = ({ category, searchValue,selected }) => {
           <div
             key={product.id}
             className="bg-white border rounded-lg shadow-sm p-4 relative"
-            onClick={( ) =>{
+            onClick={() => {
               navigate(`/browse/${product.id}`);
             }}
           >
@@ -83,7 +88,8 @@ export const ProductGrid = ({ category, searchValue,selected }) => {
               <span className="text-xl font-bold">
                 {product.is_rental
                   ? `${product.rental_rate}₹/day`
-                  : product.price}
+                  : `${product.price}₹`}
+                
               </span>
               <span
                 className={`px-3 py-1 text-sm rounded-full ${

@@ -10,7 +10,6 @@ export const ListItem = () => {
     description: "",
     price: "",
     weeklyPrice: "",
-    monthlyPrice: "",
     deposit: "",
     serviceFee: "",
     image: null,

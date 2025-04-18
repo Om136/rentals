@@ -35,6 +35,11 @@ export const Navbar = () => {
         }}>
           List your item
         </Button>
+        <Button variant="link" onClick={()=>{
+          navigate("/manage")
+        }}>
+          Manage my items
+        </Button>
       </div>
       <div className='flex gap-4'>
         <Button onClick={handleSignIn}>

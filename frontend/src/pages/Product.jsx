@@ -43,9 +43,11 @@ export const ProductDetails = () => {
   }, [id]);
 
   const calculateTotal = () => {
-    if (!startDate || !endDate) return product.deposit;
+
     const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    return days * product.rental_rate + 5 + 100;
+    const total = days * product.rental_rate + 5 + 100; // Rental rate + service fee + deposit
+    console.log("Total:", total);
+    return total;
   };
 
   return (
@@ -91,70 +93,98 @@ export const ProductDetails = () => {
       <div className="bg-white shadow-md rounded-lg p-6 border">
         {/* Rent / Buy Toggle */}
         <div className="flex border-b pb-3 space-x-4">
-          <button className="text-lg font-semibold border-b-2 border-black pb-1">
+          <button
+            className={`text-lg font-semibold pb-1 ${
+              product.is_rental ? "border-b-2 border-black" : "text-gray-400"
+            }`}
+          >
             Rent
           </button>
-          <button className="text-lg font-semibold text-gray-400">Buy</button>
+          <button
+            className={`text-lg font-semibold pb-1 ${
+              !product.is_rental ? "border-b-2 border-black" : "text-gray-400"
+            }`}
+          >
+            Buy
+          </button>
         </div>
 
         {/* Pricing */}
         <div className="text-3xl font-bold mt-4">
-          ${product.rental_rate} <span className="text-lg">/day</span>
+          {product.is_rental
+            ? `${product.rental_rate}/day`
+            : `$${product.price}`}
         </div>
         {/* <div className="text-gray-500 text-sm">
           Weekly: ${product.weeklyPrice} | Monthly: ${product.monthlyPrice}
         </div> */}
 
         {/* Date Picker */}
-        <div className="mt-4">
-          <label className="block text-gray-600 font-medium mb-2">
-            Select Dates
-          </label>
-          <div className="flex space-x-2">
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              placeholderText="Start Date"
-              className="border p-2 rounded w-1/2"
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              placeholderText="End Date"
-              className="border p-2 rounded w-1/2"
-            />
+        {product.is_rental && (
+          <div className="mt-4">
+            <label className="block text-gray-600 font-medium mb-2">
+              Select Dates
+            </label>
+            <div className="flex space-x-2">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                placeholderText="Start Date"
+                className="border p-2 rounded w-1/2"
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                placeholderText="End Date"
+                className="border p-2 rounded w-1/2"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Pricing Breakdown */}
         <div className="mt-4 space-y-2">
           <div className="flex justify-between">
             <span>
-              ${product.price} x{" "}
-              {startDate && endDate
-                ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))
-                : 0}{" "}
-              days
+              ${product.is_rental ? product.rental_rate : product.price}{" "}
+              {product.is_rental && "x"} {product.is_rental && " "}
+              {product.is_rental &&
+                (startDate && endDate
+                  ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))
+                  : 1)}{" "}
+              {product.is_rental && "days"}
             </span>
+
             <span>
               $
-              {startDate && endDate
+              {!product.is_rental
+                ? product.price
+                : startDate && endDate
                 ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) *
-                  product.price
-                : 0}
+                  product.rental_rate
+                : Math.ceil(1 / (1000 * 60 * 60 * 24)) * product.rental_rate}
             </span>
           </div>
           <div className="flex justify-between">
             <span>Service Fee</span>
-            <span>${5}</span>
+            <span>${10}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Security Deposit (Refundable)</span>
-            <span>${100}</span>
-          </div>
+          {product.is_rental && (
+            <div className="flex justify-between">
+              <span>Security Deposit (Refundable)</span>
+              <span>${100}</span>
+            </div>
+          )}
           <div className="flex justify-between font-bold text-lg mt-2">
             <span>Total</span>
-            <span>${calculateTotal()}</span>
+            <span>
+              $
+              {product.is_rental
+                ? !startDate || !endDate
+                  ? `${Number(product.rental_rate) + 5 + 100}`
+                  : calculateTotal()
+                : (Number(product.price) + 10).toFixed(2)}
+            </span>
           </div>
         </div>
 

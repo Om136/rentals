@@ -38,6 +38,7 @@ export const createItem = async (
 };
 
 export const getItemById = async (itemId) => {
+ 
   const result = await pool.query(
     `SELECT 
       id, title, description, category, 
@@ -144,4 +145,12 @@ export const deleteItem = async (itemId) => {
     [itemId]
   );
   return result.rows[0];
+};
+
+export const getMyItems = async (userId) => {
+  const result = await pool.query(
+    `SELECT id, title, description, category, images, status, created_at, price, rental_rate, is_rental FROM items WHERE user_id = $1`,
+    [userId]
+  );
+  return result.rows;
 };
