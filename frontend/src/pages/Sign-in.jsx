@@ -56,7 +56,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 pt-16">
       <div className="bg-white p-8 shadow-lg rounded-lg max-w-md w-full">
         <h2 className="text-2xl font-bold text-center mb-4">Sign In</h2>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}

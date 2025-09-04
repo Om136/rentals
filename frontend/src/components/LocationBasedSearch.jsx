@@ -147,100 +147,131 @@ const LocationBasedSearch = ({
   };
 
   return (
-    <div
-      className={`bg-white shadow-md rounded-xl p-4 w-full max-w-4xl mx-auto ${className}`}
-    >
-      {/* Header - Compact */}
-      <div className="flex items-center space-x-1 bg-gray-100 rounded-xl px-3 py-2 mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">
-          🎯 Search by Location
+    <div className={`w-full max-w-4xl mx-auto ${className}`}>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
+          🎯 Find What You Need
         </h2>
+        <p className="text-gray-600 text-lg">
+          Search for items by location and discover what's available nearby
+        </p>
       </div>
 
-      {/* Main Search Row - Horizontal Layout */}
-      <div className="flex flex-wrap items-end gap-3">
-        {/* Search Input */}
-        <div className="flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 py-2 flex-1 min-w-[200px]">
-          <FaSearch className="text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="What are you looking for?"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleLocationSearch()}
-            className="bg-transparent w-full outline-none"
-          />
-        </div>
-
-        {/* Location Input/Display */}
-        <div className="flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 py-2 min-w-[200px] flex-1">
-          <FaMapMarkerAlt className="text-gray-400 mr-2" />
-          {userLocation && address ? (
-            <div className="flex items-center justify-between w-full">
-              <span className="text-sm text-gray-700 truncate">{address}</span>
-              <button
-                onClick={() => setLocationStatus("idle")}
-                className="text-xs text-gray-500 hover:text-gray-700 ml-2"
-              >
-                Change
-              </button>
+      {/* Main Search - Streamlined Design */}
+      <div className="space-y-6">
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Search Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              What are you looking for?
+            </label>
+            <div className="relative">
+              <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Cameras, bikes, tools, furniture..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleLocationSearch()}
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-lg"
+              />
             </div>
-          ) : (
-            <input
-              type="text"
-              placeholder="Enter location or use current"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              onKeyPress={(e) =>
-                e.key === "Enter" && handleAddressSearch(address)
-              }
-              className="bg-transparent w-full outline-none"
-            />
-          )}
-        </div>
+          </div>
 
-        {/* Location Button */}
-        {!userLocation && (
-          <button
-            onClick={handleGetCurrentLocation}
-            disabled={locationStatus === "loading"}
-            className="bg-gray-200 text-gray-700 rounded-md px-3 py-2 hover:bg-gray-300 transition-colors disabled:opacity-50"
-          >
-            {locationStatus === "loading" ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-            ) : (
-              <FaLocationArrow className="h-4 w-4" />
-            )}
-          </button>
-        )}
+          {/* Location Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Where are you looking?
+            </label>
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <FaMapMarkerAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                {userLocation && address ? (
+                  <div className="w-full pl-12 pr-4 py-4 border-2 border-green-300 rounded-xl bg-green-50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700 font-medium truncate">
+                        📍 {address}
+                      </span>
+                      <button
+                        onClick={() => {
+                          setUserLocation(null);
+                          setAddress("");
+                          setLocationStatus("idle");
+                        }}
+                        className="text-sm text-red-600 hover:text-red-800 font-semibold"
+                      >
+                        Change
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    placeholder="Enter your city or address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && handleAddressSearch(address)
+                    }
+                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-lg"
+                  />
+                )}
+              </div>
+
+              {/* Location Button */}
+              {!userLocation && (
+                <button
+                  onClick={handleGetCurrentLocation}
+                  disabled={locationStatus === "loading"}
+                  className="px-4 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all disabled:opacity-50 border-2 border-transparent shadow-lg"
+                  title="Use current location"
+                >
+                  {locationStatus === "loading" ? (
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                  ) : (
+                    <FaLocationArrow className="h-6 w-6" />
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Search Button */}
-        <button
-          onClick={handleLocationSearch}
-          disabled={!searchQuery.trim() && !userLocation && !address.trim()}
-          className="bg-gray-900 text-white rounded-md px-6 py-2 hover:bg-gray-800 transition-colors disabled:opacity-50 font-medium"
-        >
-          {searchQuery.trim()
-            ? "Search"
-            : userLocation || address.trim()
-            ? "Browse Nearby"
-            : "Search"}
-        </button>
+        <div className="text-center">
+          <button
+            onClick={handleLocationSearch}
+            disabled={!searchQuery.trim() && !userLocation && !address.trim()}
+            className="px-12 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-xl shadow-xl transform hover:scale-105"
+          >
+            {searchQuery.trim()
+              ? "🔍 Search Items"
+              : userLocation || address.trim()
+              ? "📍 Browse Nearby"
+              : "🔍 Start Searching"}
+          </button>
+        </div>
       </div>
 
-      {/* Status Messages - Compact */}
+      {/* Status Messages */}
       {locationStatus === "error" && (
-        <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-700 text-sm">
-            Unable to get location. Please enter manually.
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <p className="text-red-700 text-sm font-medium">
+            ⚠️ Unable to get location. Please enter your location manually.
           </p>
         </div>
       )}
 
-      {/* Recent Searches - Horizontal Pills */}
+      {/* Recent Searches */}
       {recentSearches.length > 0 && (
-        <div className="mt-4 flex items-center gap-2">
-          <span className="text-sm text-gray-600">Recent:</span>
+        <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+          <div className="flex items-center gap-3 mb-3">
+            <FaClock className="text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">
+              Recent Searches
+            </span>
+          </div>
           <div className="flex flex-wrap gap-2">
             {recentSearches.map((search, index) => (
               <button
@@ -249,7 +280,7 @@ const LocationBasedSearch = ({
                   setSearchQuery(search);
                   handleLocationSearch();
                 }}
-                className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+                className="px-3 py-2 text-sm bg-white hover:bg-indigo-50 text-gray-700 hover:text-indigo-700 rounded-lg transition-colors border border-gray-200 hover:border-indigo-200"
               >
                 {search}
               </button>

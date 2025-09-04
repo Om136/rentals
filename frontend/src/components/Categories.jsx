@@ -61,46 +61,44 @@ export const Categories = ({ setSelectedCategory }) => {
   ];
 
   return (
-    <section className="mx-auto px-4 py-16 bg-gray-50">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-12 px-4 lg:px-20">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900">
-            Popular Categories
-          </h2>
-          <p className="text-gray-600 mt-2">
-            Browse by category to find what you need
-          </p>
-        </div>
-        <button
-          onClick={() => navigate("/browse")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
-        >
-          View all
-          <FaArrowRight className="w-4 h-4" />
-        </button>
-      </div>
-
+    <section className="mx-auto px-4">
       {/* Categories Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 px-4 lg:px-20">
-        {categories.map((category) => (
-          <div
-            key={category.label}
-            onClick={() => {
-              setSelectedCategory(category.label);
-              navigate("/browse");
-            }}
-            className="group flex flex-col items-center p-6 bg-white rounded-xl border border-gray-200 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-300"
-          >
-            <div className="mb-4 p-3 rounded-full bg-gray-50 text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-300">
-              {category.icon}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+        {categories.map((category, index) => {
+          const colors = [
+            "bg-blue-500 hover:bg-blue-600",
+            "bg-indigo-500 hover:bg-indigo-600",
+            "bg-purple-500 hover:bg-purple-600",
+            "bg-pink-500 hover:bg-pink-600",
+            "bg-red-500 hover:bg-red-600",
+            "bg-orange-500 hover:bg-orange-600",
+            "bg-amber-500 hover:bg-amber-600",
+            "bg-green-500 hover:bg-green-600",
+          ];
+
+          return (
+            <div
+              key={category.label}
+              onClick={() => {
+                setSelectedCategory(category.label);
+                navigate("/browse");
+              }}
+              className="group flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            >
+              <div
+                className={`mb-4 p-4 rounded-2xl text-white ${
+                  colors[index % colors.length]
+                } transition-all duration-300`}
+              >
+                {category.icon}
+              </div>
+              <span className="font-semibold text-gray-900 mb-1 text-center text-sm">
+                {category.label}
+              </span>
+              <span className="text-xs text-gray-500">{category.count}</span>
             </div>
-            <span className="font-semibold text-gray-900 mb-1 text-center">
-              {category.label}
-            </span>
-            <span className="text-xs text-gray-500">{category.count}</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
