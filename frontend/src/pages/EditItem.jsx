@@ -21,11 +21,26 @@ export const EditItem = () => {
     lng: "",
   });
 
+  // Check authentication on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Redirect to sign-in page if no token found
+      navigate("/sign-in");
+      return;
+    }
+  }, [navigate]);
+
   // Fetch existing item
   useEffect(() => {
     const fetchItem = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/sign-in");
+          return;
+        }
+
         const { data } = await axios.get(
           `http://localhost:5000/items/${Number(id)}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -47,6 +62,17 @@ export const EditItem = () => {
         });
       } catch (err) {
         console.error(err);
+
+        // If it's an authentication error, redirect to sign-in
+        if (
+          err.response &&
+          (err.response.status === 401 || err.response.status === 403)
+        ) {
+          localStorage.removeItem("token"); // Clear invalid token
+          navigate("/sign-in");
+          return;
+        }
+
         alert("Failed to load item.");
         navigate("/manage");
       } finally {
@@ -57,7 +83,7 @@ export const EditItem = () => {
   }, [id, navigate]);
 
   const handleChange = (e) => {
-    const { name, value} = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: name === "is_rental" ? value === "true" : value,

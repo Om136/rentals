@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const SignIn = () => {
@@ -7,6 +7,15 @@ export const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && token !== "null" && token !== "undefined") {
+      // User is already logged in, redirect to home
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,23 +32,27 @@ export const SignIn = () => {
       email: formData.email,
       password: formData.password,
     };
-    const header = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    const headers = {
+      "Content-Type": "application/json",
     };
-    axios.post("http://localhost:5000/auth/signin", body, { headers: header })
-    .then((response) => {
+    axios
+      .post("http://localhost:5000/auth/signin", body, { headers })
+      .then((response) => {
         console.log("Sign-In Response:", response.data);
         alert("Sign-In Successful!");
         localStorage.setItem("token", response.data.token);
+
+        // Trigger storage event for navbar update
+        window.dispatchEvent(new Event("storage"));
+
         navigate("/");
-
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.error("Sign-In Error:", error.response.data);
-        setError(error.response.data.msg || "An error occurred during sign-in.");
-    })
-
+        setError(
+          error.response.data.msg || "An error occurred during sign-in."
+        );
+      });
   };
 
   return (

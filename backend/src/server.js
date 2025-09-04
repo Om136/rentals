@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import authRouter  from "./routes/authRoutes.js";
 import itemRouter from "./routes/itemRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 
 dotenv.config();
 
@@ -21,3 +22,4 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", authRouter);
 app.use("/items", itemRouter);
+app.use("/payment", paymentRouter);

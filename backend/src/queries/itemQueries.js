@@ -38,7 +38,6 @@ export const createItem = async (
 };
 
 export const getItemById = async (itemId) => {
- 
   const result = await pool.query(
     `SELECT 
       id, title, description, category, 
@@ -80,11 +79,13 @@ export const getFilteredItems = async (filters) => {
     WHERE 1=1
   `;
 
-  // Text search
+  // Enhanced text search - search in title, description, and category
   if (filters.searchTerm) {
-    query += ` AND (title ILIKE $${params.length + 1} OR description ILIKE $${
-      params.length + 1
-    })`;
+    query += ` AND (
+      title ILIKE $${params.length + 1} 
+      OR description ILIKE $${params.length + 1}
+      OR category ILIKE $${params.length + 1}
+    )`;
     params.push(`%${filters.searchTerm}%`);
   }
 
@@ -100,6 +101,29 @@ export const getFilteredItems = async (filters) => {
     params.push(filters.status);
   }
 
+  // Price range filter
+  if (filters.minPrice !== undefined) {
+    query += ` AND (
+      (is_rental = false AND price >= $${params.length + 1})
+      OR (is_rental = true AND rental_rate >= $${params.length + 1})
+    )`;
+    params.push(filters.minPrice);
+  }
+
+  if (filters.maxPrice !== undefined) {
+    query += ` AND (
+      (is_rental = false AND price <= $${params.length + 1})
+      OR (is_rental = true AND rental_rate <= $${params.length + 1})
+    )`;
+    params.push(filters.maxPrice);
+  }
+
+  // Rental/Sale filter
+  if (filters.isRental !== undefined) {
+    query += ` AND is_rental = $${params.length + 1}`;
+    params.push(filters.isRental);
+  }
+
   // Location-based filter
   if (filters.lng && filters.lat) {
     query += `
@@ -112,11 +136,23 @@ export const getFilteredItems = async (filters) => {
     params.push(filters.maxDistance);
   }
 
-  // Sorting
+  // Enhanced sorting options
   if (filters.sortBy === "nearest" && filters.lng && filters.lat) {
-    query += ` ORDER BY distance`;
+    query += ` ORDER BY distance ASC`;
+  } else if (filters.sortBy === "price") {
+    const priceOrder = filters.sortOrder || "asc";
+    query += ` ORDER BY 
+      CASE 
+        WHEN is_rental = true THEN rental_rate 
+        ELSE price 
+      END ${priceOrder.toUpperCase()}`;
+  } else if (filters.sortBy === "title") {
+    const titleOrder = filters.sortOrder || "asc";
+    query += ` ORDER BY title ${titleOrder.toUpperCase()}`;
   } else {
-    query += ` ORDER BY created_at DESC`;
+    // Default sort by creation date
+    const dateOrder = filters.sortOrder || "desc";
+    query += ` ORDER BY created_at ${dateOrder.toUpperCase()}`;
   }
 
   const result = await pool.query(query, params);

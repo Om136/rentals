@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const SignUp = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,6 +12,15 @@ export const SignUp = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && token !== "null" && token !== "undefined") {
+      // User is already logged in, redirect to home
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,6 +53,10 @@ export const SignUp = () => {
         console.log(response.data);
         const token = response.data.token;
         localStorage.setItem("token", token);
+
+        // Trigger storage event for navbar update
+        window.dispatchEvent(new Event("storage"));
+
         navigate("/");
 
         alert("Sign-Up Successful!");

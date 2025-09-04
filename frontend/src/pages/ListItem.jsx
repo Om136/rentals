@@ -1,6 +1,7 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LocationPicker from "../components/LocationPicker";
 
 export const ListItem = () => {
   const navigate = useNavigate();
@@ -14,9 +15,20 @@ export const ListItem = () => {
     serviceFee: "",
     image: null,
     listingType: "rent",
-    latitude: "", // Added latitude
-    longitude: "", // Added longitude
+    latitude: "",
+    longitude: "",
+    locationAddress: "", // New field for address
   });
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Redirect to sign-in page if no token found
+      navigate("/sign-in");
+      return;
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,8 +40,25 @@ export const ListItem = () => {
     setFormData({ ...formData, image: file });
   };
 
+  // Handle location selection from LocationPicker
+  const handleLocationSelect = (lat, lng, address) => {
+    setFormData((prev) => ({
+      ...prev,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+      locationAddress: address,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation
+    if (!formData.latitude || !formData.longitude) {
+      alert("Please select a location for your item.");
+      return;
+    }
+
     const data = new FormData();
 
     // Ensure all fields are appended correctly
@@ -74,7 +103,6 @@ export const ListItem = () => {
       console.log("Response:", response.data);
       alert("Item listed successfully!");
       navigate("/"); // Redirect to home page or another page after successful listing
-
     } catch (error) {
       if (error.response && error.response.status === 401) {
         alert("Unauthorized: Please log in again.");
@@ -138,31 +166,14 @@ export const ListItem = () => {
           ></textarea>
         </div>
 
-        {/* Location */}
-        <div className="flex gap-10">
-          <div>
-            <label className="block font-medium">Latitude</label>
-            <input
-              type="number"
-              name="latitude" // Corrected name attribute
-              value={formData.latitude} // Corrected value binding
-              onChange={handleChange}
-              required
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block font-medium">Longitude</label>
-            <input
-              type="number"
-              name="longitude" // Corrected name attribute
-              value={formData.longitude} // Corrected value binding
-              onChange={handleChange}
-              required
-              className="w-full border p-2 rounded"
-            />
-          </div>
-        </div>
+        {/* Location Picker */}
+        <LocationPicker
+          onLocationSelect={handleLocationSelect}
+          initialLat={formData.latitude ? parseFloat(formData.latitude) : null}
+          initialLng={
+            formData.longitude ? parseFloat(formData.longitude) : null
+          }
+        />
 
         {/* Listing Type */}
         <div>

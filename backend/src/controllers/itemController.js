@@ -68,18 +68,25 @@ export const ItemsGetter = async (req, res) => {
       searchTerm: req.query.search,
       categories: req.query.categories?.split(","),
       status: req.query.status,
-      lng: req.query.lng ? parseFloat(req.query.lng) : undefined, // Parse as float
-      lat: req.query.lat ? parseFloat(req.query.lat) : undefined, // Parse as float
+      lng: req.query.lng ? parseFloat(req.query.lng) : undefined,
+      lat: req.query.lat ? parseFloat(req.query.lat) : undefined,
       maxDistance: req.query.maxDistance
         ? parseInt(req.query.maxDistance)
-        : 5000,
-      sortBy: req.query.sortBy,
+        : 10000, // Default 10km
+      sortBy: req.query.sortBy || "created_at", // Default sort by creation date
+      sortOrder: req.query.sortOrder || "desc", // Default descending
+      minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
+      maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
+      isRental:
+        req.query.isRental !== undefined
+          ? req.query.isRental === "true"
+          : undefined,
     };
 
     const items = await getFilteredItems(filters);
     res.json(items);
   } catch (err) {
-    console.error("Database error:", err); // Log the actual error
+    console.error("Database error:", err);
     res.status(500).json({ error: "Failed to fetch items" });
   }
 };

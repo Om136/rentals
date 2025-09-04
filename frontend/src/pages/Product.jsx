@@ -2,30 +2,15 @@ import React, { useEffect, useState } from "react";
 import { FaStar, FaMapMarkerAlt, FaRegHeart, FaShareAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import PaymentModal from "../components/PaymentModal";
 
 export const ProductDetails = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tab, setTab] = useState("description");
-
-  // const product = {
-  //   id: 1,
-  //   name: "Professional DSLR Camera Kit with Lenses",
-  //   price: 35,
-  //   weeklyPrice: 210,
-  //   monthlyPrice: 700,
-  //   location: "San Francisco, CA",
-  //   rating: 4.9,
-  //   reviews: 128,
-  //   deposit: 200,
-  //   serviceFee: 15,
-  //   image: "", // Add image URL or leave empty for a placeholder
-  //   description:
-  //     "A high-quality DSLR camera kit with multiple lenses for professional photography.",
-  //   specifications: ["24MP Sensor", "4K Video Recording", "Wi-Fi & Bluetooth"],
-  // };
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [product, setProduct] = useState({ images: [] }); // Ensure images is initialized as an empty array
 
   const { id } = useParams();
@@ -189,10 +174,41 @@ export const ProductDetails = () => {
         </div>
 
         {/* Reserve Button */}
-        <button className="w-full bg-black text-white py-3 mt-4 rounded-md">
-          Reserve Now
+        <button 
+          onClick={() => {
+            // Check if user is authenticated
+            const token = localStorage.getItem("token");
+            if (!token) {
+              alert("Please sign in to continue with payment");
+              return;
+            }
+            
+            // Check if dates are selected for rental
+            if (product.is_rental && (!startDate || !endDate)) {
+              alert("Please select rental dates");
+              return;
+            }
+            
+            setShowPaymentModal(true);
+          }}
+          className="w-full bg-black text-white py-3 mt-4 rounded-md hover:bg-gray-800 transition-colors"
+        >
+          {product.is_rental ? "Reserve Now" : "Buy Now"}
         </button>
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        item={product}
+        isRental={product.is_rental}
+        rentalDays={
+          product.is_rental && startDate && endDate
+            ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))
+            : 1
+        }
+      />
 
       {/* Tabs: Description, Specifications, Reviews */}
       <div className="col-span-2 mt-10">
