@@ -28,7 +28,6 @@ export const ProductDetails = () => {
   }, [id]);
 
   const calculateTotal = () => {
-
     const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
     const total = days * product.rental_rate + 5 + 100; // Rental rate + service fee + deposit
     console.log("Total:", total);
@@ -174,7 +173,7 @@ export const ProductDetails = () => {
         </div>
 
         {/* Reserve Button */}
-        <button 
+        <button
           onClick={() => {
             // Check if user is authenticated
             const token = localStorage.getItem("token");
@@ -182,13 +181,13 @@ export const ProductDetails = () => {
               alert("Please sign in to continue with payment");
               return;
             }
-            
+
             // Check if dates are selected for rental
             if (product.is_rental && (!startDate || !endDate)) {
               alert("Please select rental dates");
               return;
             }
-            
+
             setShowPaymentModal(true);
           }}
           className="w-full bg-black text-white py-3 mt-4 rounded-md hover:bg-gray-800 transition-colors"

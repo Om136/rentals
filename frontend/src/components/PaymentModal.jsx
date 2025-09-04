@@ -10,9 +10,19 @@ import axios from "axios";
 import { FaCreditCard, FaLock, FaCheckCircle } from "react-icons/fa";
 
 // Initialize Stripe (replace with your actual test public key)
-const stripePromise = loadStripe("pk_test_YOUR_ACTUAL_STRIPE_PUBLISHABLE_KEY_HERE");
+const stripePromise = loadStripe(
+  "pk_test_YOUR_ACTUAL_STRIPE_PUBLISHABLE_KEY_HERE"
+);
 
-const CheckoutForm = ({ amount, itemId, itemName, isRental, rentalDays, onSuccess, onCancel }) => {
+const CheckoutForm = ({
+  amount,
+  itemId,
+  itemName,
+  isRental,
+  rentalDays,
+  onSuccess,
+  onCancel,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);

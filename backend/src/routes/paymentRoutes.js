@@ -1,8 +1,8 @@
 import express from "express";
-import { 
-  createPaymentIntent, 
-  confirmPayment, 
-  getPaymentHistory 
+import {
+  createPaymentIntent,
+  confirmPayment,
+  getPaymentHistory,
 } from "../controllers/paymentController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 

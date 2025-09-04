@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
-import authRouter  from "./routes/authRoutes.js";
+import authRouter from "./routes/authRoutes.js";
 import itemRouter from "./routes/itemRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 

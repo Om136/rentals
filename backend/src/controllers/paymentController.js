@@ -42,14 +42,14 @@ export const confirmPayment = async (req, res) => {
     if (paymentIntent.status === "succeeded") {
       // Here you would update your database
       // For testing, we'll just return success
-      
+
       const { itemId, rentalDays } = paymentIntent.metadata;
-      
+
       // In a real app, you'd update the item status in database:
       // - Mark item as rented/sold
       // - Create booking/transaction record
       // - Send confirmation emails
-      
+
       res.json({
         success: true,
         message: "Payment confirmed successfully",
@@ -61,9 +61,9 @@ export const confirmPayment = async (req, res) => {
         },
       });
     } else {
-      res.status(400).json({ 
+      res.status(400).json({
         error: "Payment not successful",
-        status: paymentIntent.status 
+        status: paymentIntent.status,
       });
     }
   } catch (error) {
@@ -84,12 +84,12 @@ export const getPaymentHistory = async (req, res) => {
         {
           id: 1,
           itemName: "Sample Item",
-          amount: 50.00,
+          amount: 50.0,
           date: new Date().toISOString(),
           status: "completed",
-          type: "rental"
-        }
-      ]
+          type: "rental",
+        },
+      ],
     });
   } catch (error) {
     console.error("Error fetching payment history:", error);
