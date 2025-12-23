@@ -6,13 +6,13 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import axios from "axios";
+import { api } from "../lib/api";
 import { FaCreditCard, FaLock, FaCheckCircle } from "react-icons/fa";
 
-// Initialize Stripe (replace with your actual test public key)
-const stripePromise = loadStripe(
-  "pk_test_YOUR_ACTUAL_STRIPE_PUBLISHABLE_KEY_HERE"
-);
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = stripePublishableKey
+  ? loadStripe(stripePublishableKey)
+  : null;
 
 const CheckoutForm = ({
   amount,
@@ -34,8 +34,8 @@ const CheckoutForm = ({
     const createPaymentIntent = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.post(
-          "http://localhost:5000/payment/create-payment-intent",
+        const response = await api.post(
+          "/payment/create-payment-intent",
           {
             amount,
             itemId,
@@ -85,8 +85,8 @@ const CheckoutForm = ({
       } else if (paymentIntent.status === "succeeded") {
         // Confirm payment on backend
         const token = localStorage.getItem("token");
-        await axios.post(
-          "http://localhost:5000/payment/confirm-payment",
+        await api.post(
+          "/payment/confirm-payment",
           {
             paymentIntentId: paymentIntent.id,
           },

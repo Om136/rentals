@@ -1,5 +1,5 @@
 // src/components/ManageItems.jsx
-import axios from "axios";
+import { api } from "../lib/api";
 import React, { useEffect, useState } from "react";
 import {
   FaEdit,
@@ -40,14 +40,11 @@ export const ManageItems = () => {
           return;
         }
 
-        const response = await axios.get(
-          "http://localhost:5000/items/my/items",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await api.get("/items/my/items", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const mappedItems = response.data.map((item) => ({
           id: item.id,

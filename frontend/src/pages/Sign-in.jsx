@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../lib/api";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -35,8 +35,8 @@ export const SignIn = () => {
     const headers = {
       "Content-Type": "application/json",
     };
-    axios
-      .post("http://localhost:5000/auth/signin", body, { headers })
+    api
+      .post("/auth/signin", body, { headers })
       .then((response) => {
         console.log("Sign-In Response:", response.data);
         alert("Sign-In Successful!");

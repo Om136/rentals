@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Heart, MapPin, Calendar, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { api } from "../lib/api";
 
 const ProductDisplayEnhanced = () => {
   const [searchParams] = useSearchParams();
@@ -28,9 +28,7 @@ const ProductDisplayEnhanced = () => {
           if (value) params.append(key, value);
         });
 
-        const response = await axios.get(
-          `http://localhost:5000/items?${params.toString()}`
-        );
+        const response = await api.get(`/items?${params.toString()}`);
         setProducts(response.data);
         setCurrentPage(1); // Reset to first page on new search
       } catch (err) {

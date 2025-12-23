@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../lib/api";
 import React, { useEffect, useState, useMemo } from "react";
 import { FaStar, FaHeart, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -47,9 +47,7 @@ export const ProductGrid = ({ category, searchValue, selected }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Temporary fix: Always fetch all products without location filter
-        console.log("Making API call to: http://localhost:5000/items");
-        const response = await axios.get("http://localhost:5000/items");
+        const response = await api.get("/items");
         setAllProducts(response.data);
         console.log("Products received:", response.data);
         console.log("Number of products:", response.data.length);

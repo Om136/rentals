@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../lib/api";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -47,8 +47,8 @@ export const SignUp = () => {
       name: formData.name,
     };
 
-    axios
-      .post("http://localhost:5000/auth/signup", body) // Added "http://"
+    api
+      .post("/auth/signup", body)
       .then((response) => {
         console.log(response.data);
         const token = response.data.token;

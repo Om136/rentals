@@ -1,3 +1,12 @@
 // config/stripe.js
+import "dotenv/config";
 import Stripe from "stripe";
-export const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+const apiKey = process.env.STRIPE_SECRET_KEY;
+if (!apiKey) {
+  throw new Error(
+    "Missing STRIPE_SECRET_KEY. Set it in backend .env / host environment variables."
+  );
+}
+
+export const stripe = Stripe(apiKey);

@@ -1,15 +1,19 @@
+import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import dotenv from "dotenv";
 import authRouter from "./routes/authRoutes.js";
 import itemRouter from "./routes/itemRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 
-dotenv.config();
-
 const app = express();
 app.use(express.json());
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(
+  cors({
+    origin: corsOrigin ? corsOrigin.split(",").map((s) => s.trim()) : true,
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 
 const PORT = process.env.PORT || 5000;

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../lib/api";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LocationPicker from "../components/LocationPicker";
@@ -93,7 +93,7 @@ export const ListItem = () => {
         throw new Error("Authentication token is missing. Please log in.");
       }
 
-      const response = await axios.post("http://localhost:5000/items", body, {
+      const response = await api.post("/items", body, {
         headers: {
           "Content-Type": "multipart/form-data", // Ensure multipart/form-data is used
           Authorization: `Bearer ${token}`,

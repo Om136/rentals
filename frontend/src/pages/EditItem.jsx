@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../lib/api";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const EditItem = () => {
@@ -41,10 +41,9 @@ export const EditItem = () => {
           return;
         }
 
-        const { data } = await axios.get(
-          `http://localhost:5000/items/${Number(id)}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const { data } = await api.get(`/items/${Number(id)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         setFormData({
           title: data.title,
@@ -123,14 +122,14 @@ export const EditItem = () => {
         });
         data.append("image", formData.image);
 
-        await axios.put(`http://localhost:5000/items/${id}`, data, {
+        await api.put(`/items/${id}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         });
       } else {
-        await axios.put(`http://localhost:5000/items/${id}`, body, {
+        await api.put(`/items/${id}`, body, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }

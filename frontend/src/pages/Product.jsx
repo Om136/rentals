@@ -11,7 +11,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { api } from "../lib/api";
 import PaymentModal from "../components/PaymentModal";
 
 export const ProductDetails = () => {
@@ -28,7 +28,7 @@ export const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/items/${id}`);
+        const response = await api.get(`/items/${id}`);
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
