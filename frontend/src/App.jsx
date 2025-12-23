@@ -5,7 +5,7 @@ import { Browse } from "./pages/Browse";
 import BrowseEnhanced from "./pages/BrowseEnhanced";
 import { ProductDetails } from "./pages/Product";
 import { ListItem } from "./pages/ListItem";
-import { SignIn } from "./pages/sign-in";
+import { SignIn } from "./pages/Sign-in";
 import { SignUp } from "./pages/Sign-up";
 import { HowItWorks } from "./pages/HowItWorks";
 import { useState } from "react";
