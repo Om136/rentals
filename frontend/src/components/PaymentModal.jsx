@@ -119,6 +119,17 @@ const CheckoutForm = ({
     },
   };
 
+  const formatINR = (value) => {
+    const amountValue = Number(value);
+    const safeAmount = Number.isFinite(amountValue) ? amountValue : 0;
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(safeAmount);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Payment Summary */}
@@ -137,7 +148,7 @@ const CheckoutForm = ({
           )}
           <div className="flex justify-between text-lg font-semibold border-t pt-2">
             <span>Total:</span>
-            <span>${amount.toFixed(2)}</span>
+            <span>{formatINR(amount)}</span>
           </div>
         </div>
       </div>
@@ -186,7 +197,7 @@ const CheckoutForm = ({
               Processing...
             </div>
           ) : (
-            `Pay $${amount.toFixed(2)}`
+            `Pay ${formatINR(amount)}`
           )}
         </button>
       </div>

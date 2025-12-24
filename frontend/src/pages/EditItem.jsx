@@ -260,7 +260,7 @@ export const EditItem = () => {
         {/* Pricing */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium">Daily Rental Rate ($)</label>
+            <label className="block font-medium">Daily Rental Rate (₹)</label>
             <input
               type="number"
               name="rental_rate"
@@ -271,7 +271,7 @@ export const EditItem = () => {
             />
           </div>
           <div>
-            <label className="block font-medium">Selling Price ($)</label>
+            <label className="block font-medium">Selling Price (₹)</label>
             <input
               type="number"
               name="price"
@@ -282,7 +282,7 @@ export const EditItem = () => {
             />
           </div>
           <div>
-            <label className="block font-medium">Security Deposit ($)</label>
+            <label className="block font-medium">Security Deposit (₹)</label>
             <input
               type="number"
               name="deposit"
@@ -292,7 +292,7 @@ export const EditItem = () => {
             />
           </div>
           <div>
-            <label className="block font-medium">Service Fee ($)</label>
+            <label className="block font-medium">Service Fee (₹)</label>
             <input
               type="number"
               name="service_fee"

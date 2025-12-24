@@ -528,7 +528,7 @@ const BrowseEnhanced = () => {
 
                         {(priceRange.min || priceRange.max) && (
                           <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition-shadow">
-                            💰 ${priceRange.min || "0"} - $
+                            💰 ₹{priceRange.min || "0"} - ₹
                             {priceRange.max || "∞"}
                             <X
                               className="w-3 h-3 cursor-pointer hover:text-orange-200 transition-colors"

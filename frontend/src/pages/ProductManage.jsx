@@ -9,7 +9,7 @@ import {
   FaPlus,
   FaEye,
   FaChartLine,
-  FaDollarSign,
+  FaRupeeSign,
   FaClock,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,17 @@ export const ManageItems = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
+
+  const formatINR = (value) => {
+    const amount = Number(value);
+    const safeAmount = Number.isFinite(amount) ? amount : 0;
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(safeAmount);
+  };
 
   // Check authentication on component mount
   useEffect(() => {
@@ -177,11 +188,11 @@ export const ManageItems = () => {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center">
-                  <FaDollarSign className="w-6 h-6 text-white" />
+                  <FaRupeeSign className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">
-                    ${totalRevenue}
+                    {formatINR(totalRevenue)}
                   </h3>
                   <p className="text-gray-600 text-sm">Total Revenue</p>
                 </div>
@@ -363,7 +374,7 @@ export const ManageItems = () => {
                     </h3>
                     <div className="flex items-center justify-between">
                       <div className="text-2xl font-bold text-indigo-600">
-                        ${item.is_rental ? item.rent_rate : item.price}
+                        {formatINR(item.is_rental ? item.rent_rate : item.price)}
                         {item.is_rental && (
                           <span className="text-sm text-gray-500">/day</span>
                         )}

@@ -349,11 +349,11 @@ export const ListItem = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Daily Rental Price ($) *
+                      Daily Rental Price (₹) *
                     </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
-                        $
+                        ₹
                       </span>
                       <input
                         type="number"
@@ -369,11 +369,11 @@ export const ListItem = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Selling Price ($) *
+                      Selling Price (₹) *
                     </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
-                        $
+                        ₹
                       </span>
                       <input
                         type="number"
@@ -389,11 +389,11 @@ export const ListItem = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Security Deposit ($) *
+                      Security Deposit (₹) *
                     </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
-                        $
+                        ₹
                       </span>
                       <input
                         type="number"
@@ -409,11 +409,11 @@ export const ListItem = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Service Fee ($) *
+                      Service Fee (₹) *
                     </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
-                        $
+                        ₹
                       </span>
                       <input
                         type="number"
