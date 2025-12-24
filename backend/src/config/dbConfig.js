@@ -11,15 +11,18 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   port: 5432,
   ssl: { rejectUnauthorized: false },
+  keepAlive: true,
 });
 
+pool.on("error", (err) => {
+  // Prevent hard crashes on dropped idle connections.
+  console.error("🔴 Unexpected error on idle PostgreSQL client:", err);
+});
+
+// Lightweight connectivity check without leaking a checked-out client.
 pool
-  .connect()
+  .query("SELECT 1")
   .then(() => console.log("🟢 Connected to Neon PostgreSQL"))
   .catch((err) => console.error("🔴 Error connecting to Neon:", err));
-
-  pool.on("error", (err, client) => {
-    console.error("Unexpected error on idle client", err);
-  });
 
 export default pool;
