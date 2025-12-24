@@ -44,6 +44,17 @@ export const ProductDetails = () => {
     return total;
   };
 
+  const formatINR = (value) => {
+    const amount = Number(value);
+    const safeAmount = Number.isFinite(amount) ? amount : 0;
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(safeAmount);
+  };
+
   return (
     <div className="min-h-screen bg-white pt-16">
       {/* Hero Section with Back Button - Slate Theme */}
@@ -185,8 +196,8 @@ export const ProductDetails = () => {
                   <div>
                     <div className="text-3xl font-bold">
                       {product.is_rental
-                        ? `$${product.rental_rate}`
-                        : `$${product.price}`}
+                        ? formatINR(product.rental_rate)
+                        : formatINR(product.price)}
                       {product.is_rental && (
                         <span className="text-lg font-normal">/day</span>
                       )}
@@ -264,21 +275,23 @@ export const ProductDetails = () => {
                         )}
                       </span>
                       <span className="font-medium">
-                        $
-                        {product.is_rental
-                          ? startDate && endDate
-                            ? Math.ceil(
-                                (endDate - startDate) / (1000 * 60 * 60 * 24)
-                              ) * product.rental_rate
-                            : product.rental_rate
-                          : product.price}
+                        {formatINR(
+                          product.is_rental
+                            ? startDate && endDate
+                              ? Math.ceil(
+                                  (endDate - startDate) /
+                                    (1000 * 60 * 60 * 24)
+                                ) * product.rental_rate
+                              : product.rental_rate
+                            : product.price
+                        )}
                       </span>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service Fee</span>
                       <span className="font-medium">
-                        ${product.is_rental ? 5 : 10}
+                        {formatINR(product.is_rental ? 5 : 10)}
                       </span>
                     </div>
 
@@ -288,19 +301,20 @@ export const ProductDetails = () => {
                           <FaShieldAlt className="w-3 h-3 text-green-500" />
                           Security Deposit (Refundable)
                         </span>
-                        <span className="font-medium">$100</span>
+                        <span className="font-medium">{formatINR(100)}</span>
                       </div>
                     )}
 
                     <div className="border-t pt-2 flex justify-between text-lg font-bold">
                       <span>Total</span>
                       <span className="text-indigo-600">
-                        $
-                        {product.is_rental
-                          ? !startDate || !endDate
-                            ? Number(product.rental_rate) + 5 + 100
-                            : calculateTotal()
-                          : Number(product.price) + 10}
+                        {formatINR(
+                          product.is_rental
+                            ? !startDate || !endDate
+                              ? Number(product.rental_rate) + 5 + 100
+                              : calculateTotal()
+                            : Number(product.price) + 10
+                        )}
                       </span>
                     </div>
                   </div>

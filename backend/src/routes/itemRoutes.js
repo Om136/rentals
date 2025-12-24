@@ -13,11 +13,13 @@ import upload from "../middlewares/upload.js";
 const itemRouter = express.Router();
 
 itemRouter.get("/", ItemsGetter);
-itemRouter.use(authMiddleware);
-itemRouter.get("/my/items", getUserItems);
-itemRouter.post("/", upload.single("image"), itemCreator);
-itemRouter.put("/:id", itemUpdater);
-itemRouter.delete("/:id", itemDeleter);
+// Public: browsing and viewing item details
 itemRouter.get("/:id", itemGetterById);
+
+// Protected: user-owned item management
+itemRouter.get("/my/items", authMiddleware, getUserItems);
+itemRouter.post("/", authMiddleware, upload.single("image"), itemCreator);
+itemRouter.put("/:id", authMiddleware, itemUpdater);
+itemRouter.delete("/:id", authMiddleware, itemDeleter);
 
 export default itemRouter;
