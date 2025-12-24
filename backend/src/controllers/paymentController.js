@@ -3,7 +3,7 @@ import { stripe } from "../config/stripe.js";
 // Create payment intent for rental/purchase
 export const createPaymentIntent = async (req, res) => {
   try {
-    const { amount, currency = "usd", itemId, rentalDays } = req.body;
+    const { amount, currency = "inr", itemId, rentalDays } = req.body;
     const userId = req.user.id;
 
     // Calculate total amount (convert to cents for Stripe)
@@ -12,7 +12,7 @@ export const createPaymentIntent = async (req, res) => {
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalAmount,
-      currency: currency,
+      currency: String(currency).toLowerCase(),
       metadata: {
         userId: userId.toString(),
         itemId: itemId.toString(),

@@ -14,6 +14,14 @@ const stripePromise = stripePublishableKey
   ? loadStripe(stripePublishableKey)
   : null;
 
+const stripeKeyIssue = !stripePublishableKey
+  ? "Missing VITE_STRIPE_PUBLISHABLE_KEY"
+  : stripePublishableKey.startsWith("sk_")
+    ? "VITE_STRIPE_PUBLISHABLE_KEY must be a publishable key (pk_...)"
+    : !stripePublishableKey.startsWith("pk_")
+      ? "Invalid Stripe publishable key (expected pk_...)"
+      : null;
+
 const CheckoutForm = ({
   amount,
   itemId,
@@ -263,17 +271,31 @@ const PaymentModal = ({ isOpen, onClose, item, isRental, rentalDays }) => {
           </button>
         </div>
 
-        <Elements stripe={stripePromise}>
-          <CheckoutForm
-            amount={amount}
-            itemId={item.id}
-            itemName={item.title}
-            isRental={isRental}
-            rentalDays={rentalDays}
-            onSuccess={handlePaymentSuccess}
-            onCancel={onClose}
-          />
-        </Elements>
+        {stripeKeyIssue || !stripePromise ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
+            <p className="font-semibold mb-1">Stripe configuration error</p>
+            <p className="mb-2">
+              {stripeKeyIssue || "Stripe failed to initialize."}
+            </p>
+            <p>
+              Set <span className="font-mono">VITE_STRIPE_PUBLISHABLE_KEY</span>{" "}
+              to your Stripe publishable key (starts with <span className="font-mono">pk_</span>)
+              and restart the frontend dev server.
+            </p>
+          </div>
+        ) : (
+          <Elements stripe={stripePromise}>
+            <CheckoutForm
+              amount={amount}
+              itemId={item.id}
+              itemName={item.title}
+              isRental={isRental}
+              rentalDays={rentalDays}
+              onSuccess={handlePaymentSuccess}
+              onCancel={onClose}
+            />
+          </Elements>
+        )}
       </div>
     </div>
   );
